@@ -4,6 +4,8 @@
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
+    "api": "node scripts/kuber-api.mjs",
+    "dev": "node scripts/kuber-api.mjs & ng serve",
     "build": "ng build",
     "watch": "ng build --watch --configuration development",
     "test": "ng test"
