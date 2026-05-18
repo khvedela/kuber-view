@@ -1,0 +1,182 @@
+<section class="resource-panel" aria-label="Resource table">
+  <nav class="view-tabs" aria-label="Resource views">
+    <button
+      type="button"
+      [class.view-tab-active]="store.mainView() === 'pods'"
+      (click)="store.setMainView('pods')"
+    >
+      Pods <span>{{ store.visiblePods().length }}</span>
+    </button>
+    <button
+      type="button"
+      [class.view-tab-active]="store.mainView() === 'workloads'"
+      (click)="store.setMainView('workloads')"
+    >
+      Workloads <span>{{ store.visibleWorkloads().length }}</span>
+    </button>
+    <button
+      type="button"
+      [class.view-tab-active]="store.mainView() === 'events'"
+      (click)="store.setMainView('events')"
+    >
+      Events <span>{{ store.namespaceEvents().length }}</span>
+    </button>
+    <button
+      type="button"
+      [class.view-tab-active]="store.mainView() === 'services'"
+      (click)="store.setMainView('services')"
+    >
+      Services <span>{{ store.namespaceServices().length }}</span>
+    </button>
+    <button
+      type="button"
+      [class.view-tab-active]="store.mainView() === 'crds'"
+      (click)="store.setMainView('crds')"
+    >
+      UPF CRDs
+      <span>{{ store.snapshot().upfPools.length + store.snapshot().decisions.length }}</span>
+    </button>
+  </nav>
+
+  <div class="resource-scroll" tabindex="0" aria-label="Scrollable resource table">
+    @if (store.mainView() === 'pods') {
+      <table class="dense-table">
+        <thead>
+          <tr>
+            <th>pod</th>
+            <th>ready</th>
+            <th>state</th>
+            <th>node</th>
+            <th>cpu</th>
+            <th>memory</th>
+            <th>r</th>
+            <th>owner</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (pod of store.visiblePods(); track pod.namespace + pod.name) {
+            <tr
+              class="click-row"
+              tabindex="0"
+              [class.row-open]="store.openedPodKeys().includes(store.podKey(pod))"
+              (click)="store.openPod(pod)"
+              (keydown.enter)="store.openPod(pod)"
+            >
+              <td class="pod-name">
+                <span [class]="'status-dot ' + (pod.health | statusClass)" aria-hidden="true"></span>
+                <strong>{{ pod.name }}</strong>
+                <small>{{ pod.namespace }} / {{ pod.ip }}</small>
+              </td>
+              <td>{{ pod.ready }}</td>
+              <td>{{ pod.reason }}</td>
+              <td>{{ pod.node }}</td>
+              <td>{{ pod.cpuMillicores | cpu }}</td>
+              <td>{{ pod.memoryMi | memory }}</td>
+              <td>{{ pod.restarts }}</td>
+              <td>{{ pod.owner }}</td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    }
+
+    @if (store.mainView() === 'workloads') {
+      <table class="dense-table">
+        <thead>
+          <tr>
+            <th>name</th>
+            <th>kind</th>
+            <th>ready</th>
+            <th>cpu</th>
+            <th>memory</th>
+            <th>r</th>
+            <th>age</th>
+            <th>state</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (wl of store.visibleWorkloads(); track wl.namespace + wl.kind + wl.name) {
+            <tr>
+              <td class="name-cell">{{ wl.namespace }}/{{ wl.name }}</td>
+              <td>{{ wl.kind }}</td>
+              <td>{{ wl.ready }}</td>
+              <td>{{ wl.cpuMillicores | cpu }}</td>
+              <td>{{ wl.memoryMi | memory }}</td>
+              <td>{{ wl.restarts }}</td>
+              <td>{{ wl.age }}</td>
+              <td>
+                <span [class]="'status-pill ' + (wl.health | statusClass)">{{ wl.health }}</span>
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    }
+
+    @if (store.mainView() === 'events') {
+      <div class="event-stack">
+        @for (event of store.namespaceEvents(); track event.time + event.object + event.message) {
+          <article class="event-card">
+            <span [class]="'status-pill ' + (event.type === 'Warning' ? 'status-warning' : 'status-healthy')">
+              {{ event.type }}
+            </span>
+            <strong>{{ event.reason }}</strong>
+            <time>{{ event.time | shortTime }}</time>
+            <p>{{ event.object }}</p>
+            <p>{{ event.message }}</p>
+          </article>
+        }
+      </div>
+    }
+
+    @if (store.mainView() === 'services') {
+      <table class="dense-table">
+        <thead>
+          <tr>
+            <th>service</th>
+            <th>type</th>
+            <th>cluster ip</th>
+            <th>ports</th>
+            <th>selector</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (svc of store.namespaceServices(); track svc.namespace + svc.name) {
+            <tr>
+              <td class="name-cell">{{ svc.namespace }}/{{ svc.name }}</td>
+              <td>{{ svc.type }}</td>
+              <td>{{ svc.clusterIp }}</td>
+              <td>{{ svc.ports }}</td>
+              <td>{{ svc.selector || '-' }}</td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    }
+
+    @if (store.mainView() === 'crds') {
+      <div class="crd-stack">
+        @for (pool of store.snapshot().upfPools; track pool.namespace + pool.name) {
+          <article class="crd-card">
+            <header>
+              UpfPool {{ pool.namespace }}/{{ pool.name }}
+              <span>{{ pool.age }}</span>
+            </header>
+            <pre>{{ asJson(pool.spec) }}</pre>
+            <pre>{{ asJson(pool.status) }}</pre>
+          </article>
+        }
+        @for (dec of store.snapshot().decisions; track dec.namespace + dec.name) {
+          <article class="crd-card">
+            <header>
+              Decision {{ dec.namespace }}/{{ dec.name }}
+              <span>{{ dec.age }}</span>
+            </header>
+            <pre>{{ asJson(dec.spec) }}</pre>
+            <pre>{{ asJson(dec.status) }}</pre>
+          </article>
+        }
+      </div>
+    }
+  </div>
+</section>

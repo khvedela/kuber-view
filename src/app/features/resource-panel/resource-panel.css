@@ -1,0 +1,259 @@
+:host {
+  display: block;
+  height: 100%;
+  overflow: hidden;
+}
+
+.resource-panel {
+  display: grid;
+  height: 100%;
+  min-width: 0;
+  min-height: 0;
+  overflow: hidden;
+  border-right: 1px solid var(--color-border);
+  background: var(--color-bg-card);
+  grid-template-rows: auto minmax(0, 1fr);
+}
+
+/* ─── View tabs ──────────────────────────────────────────────────────────── */
+
+.view-tabs {
+  display: flex;
+  gap: 0.3rem;
+  overflow-x: auto;
+  border-bottom: 1px solid var(--color-border);
+  background: var(--color-bg-elevated);
+  padding: 0.4rem 0.5rem;
+  scrollbar-width: none;
+}
+
+.view-tabs::-webkit-scrollbar { display: none; }
+
+.view-tabs button {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.38rem;
+  flex-shrink: 0;
+  border: 1px solid transparent;
+  border-radius: var(--radius-md);
+  padding: 0.38rem 0.6rem;
+  background: transparent;
+  color: var(--color-fg-muted);
+  font-family: var(--font-mono);
+  font-size: 0.66rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  line-height: 1;
+  white-space: nowrap;
+  cursor: pointer;
+  outline: none;
+  transition:
+    border-color var(--transition-fast),
+    background-color var(--transition-fast),
+    color var(--transition-fast);
+}
+
+.view-tabs button:hover {
+  border-color: var(--color-border-mid);
+  color: var(--color-fg-base);
+}
+
+.view-tabs button:focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 2px;
+}
+
+.view-tab-active {
+  border-color: var(--color-accent) !important;
+  background: var(--color-accent-bg) !important;
+  color: var(--color-accent) !important;
+}
+
+.view-tabs span {
+  border-radius: 999px;
+  background: var(--color-border-mid);
+  padding: 0.08rem 0.3rem;
+  color: var(--color-fg-faint);
+  font-size: 0.58rem;
+}
+
+.view-tab-active span {
+  background: var(--color-accent-action);
+  color: var(--color-accent);
+}
+
+/* ─── Scroll container ───────────────────────────────────────────────────── */
+
+.resource-scroll {
+  min-height: 0;
+  overflow: auto;
+  outline: none;
+}
+
+.resource-scroll:focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: -2px;
+}
+
+/* ─── Dense table ────────────────────────────────────────────────────────── */
+
+.dense-table {
+  width: 100%;
+  min-width: 720px;
+  border-collapse: collapse;
+  font-size: 0.73rem;
+  line-height: 1.15;
+}
+
+.dense-table th {
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  border-bottom: 1px solid var(--color-border);
+  background: var(--color-bg-elevated);
+  color: var(--color-fg-faint);
+  font-family: var(--font-mono);
+  font-size: 0.58rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-align: left;
+  text-transform: uppercase;
+}
+
+.dense-table th,
+.dense-table td {
+  max-width: 16rem;
+  overflow: hidden;
+  padding: 0 0.55rem;
+  height: var(--row-height, 32px);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.dense-table th { padding-top: 0.5rem; padding-bottom: 0.5rem; height: auto; }
+
+.dense-table td {
+  color: var(--color-fg-base);
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+}
+
+.dense-table tbody tr {
+  border-bottom: 1px solid var(--color-border);
+  transition:
+    background-color var(--transition-fast),
+    box-shadow var(--transition-fast);
+}
+
+.dense-table tbody tr:nth-child(even) {
+  background: var(--color-bg-stripe);
+}
+
+.click-row {
+  cursor: pointer;
+  outline: none;
+}
+
+.click-row:hover {
+  background: var(--color-accent-soft) !important;
+  box-shadow: inset 3px 0 0 var(--color-accent);
+}
+
+.click-row:focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: -2px;
+}
+
+.row-open {
+  background: var(--color-accent-bg) !important;
+  box-shadow: inset 3px 0 0 var(--color-accent-active);
+}
+
+.pod-name {
+  min-width: 18rem;
+}
+
+.pod-name strong,
+.pod-name small {
+  display: block;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.pod-name strong {
+  color: var(--color-fg-strong);
+  font-weight: 500;
+}
+
+.pod-name small {
+  margin-top: 0.1rem;
+  color: var(--color-fg-faint);
+  font-size: 0.6rem;
+}
+
+.name-cell {
+  color: var(--color-fg-strong);
+  font-weight: 500;
+}
+
+/* ─── Events ─────────────────────────────────────────────────────────────── */
+
+.event-stack,
+.crd-stack {
+  display: grid;
+  gap: 0.4rem;
+  padding: 0.45rem;
+}
+
+.event-card {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  gap: 0.28rem 0.55rem;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  background: var(--color-bg-elevated);
+  padding: 0.5rem;
+  font-size: 0.72rem;
+}
+
+.event-card p {
+  grid-column: 1 / -1;
+  margin: 0;
+  color: var(--color-fg-muted);
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+}
+
+/* ─── CRD cards ──────────────────────────────────────────────────────────── */
+
+.crd-card {
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  background: var(--color-bg-elevated);
+  padding: 0.55rem;
+}
+
+.crd-card header {
+  display: flex;
+  justify-content: space-between;
+  color: var(--color-fg-strong);
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+
+.crd-card pre {
+  max-height: 14rem;
+  overflow: auto;
+  margin: 0.4rem 0 0;
+  border-radius: var(--radius-sm);
+  background: var(--color-bg-base);
+  border: 1px solid var(--color-border);
+  padding: 0.5rem;
+  color: var(--color-fg-base);
+  font-family: var(--font-mono);
+  font-size: 0.66rem;
+  line-height: 1.5;
+}

@@ -4,8 +4,9 @@
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
-    "api": "node scripts/kuber-api.mjs",
-    "dev": "node scripts/kuber-api.mjs & ng serve",
+    "api": "node scripts/api/server.mjs",
+    "api:legacy": "node scripts/kuber-api.mjs",
+    "dev": "node scripts/api/server.mjs & ng serve",
     "build": "ng build",
     "watch": "ng build --watch --configuration development",
     "test": "ng test"
@@ -25,20 +26,30 @@
   "private": true,
   "packageManager": "npm@10.9.0",
   "dependencies": {
+    "@angular/cdk": "^21.2.11",
     "@angular/common": "^21.0.0",
     "@angular/compiler": "^21.0.0",
     "@angular/core": "^21.0.0",
     "@angular/forms": "^21.0.0",
     "@angular/platform-browser": "^21.0.0",
     "@angular/router": "^21.0.0",
+    "@kubernetes/client-node": "^1.4.0",
+    "angular-split": "^20.0.0",
+    "fuse.js": "^7.3.0",
+    "js-yaml": "^4.1.1",
+    "mousetrap": "^1.6.5",
     "rxjs": "~7.8.0",
-    "tslib": "^2.3.0"
+    "tslib": "^2.3.0",
+    "ws": "^8.20.1"
   },
   "devDependencies": {
     "@angular/build": "^21.0.4",
     "@angular/cli": "^21.0.4",
     "@angular/compiler-cli": "^21.0.0",
     "@tailwindcss/postcss": "^4.1.12",
+    "@types/js-yaml": "^4.0.9",
+    "@types/mousetrap": "^1.6.15",
+    "@types/ws": "^8.18.1",
     "jsdom": "^27.1.0",
     "postcss": "^8.5.3",
     "tailwindcss": "^4.1.12",

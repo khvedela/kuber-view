@@ -1,0 +1,18 @@
+<as-split direction="horizontal" [gutterSize]="4" (dragEnd)="onSidebarDragEnd($event)">
+  <as-split-area [size]="layout.sizes().sidebar" [minSize]="14" [maxSize]="32">
+    <app-sidebar />
+  </as-split-area>
+
+  <as-split-area [size]="100 - layout.sizes().sidebar" [minSize]="60">
+    <section class="workbench">
+      <app-command-bar />
+      <app-metric-strip />
+      <div class="workbench-content">
+        <router-outlet />
+      </div>
+    </section>
+  </as-split-area>
+</as-split>
+
+<app-cmdk />
+<app-toast />

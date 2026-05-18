@@ -1,0 +1,45 @@
+<aside class="sidebar" aria-label="Cluster navigation">
+  <header class="brand-block">
+    <p class="brand-label">⬡ Kuber·View</p>
+    <h1 class="brand-title">{{ store.snapshot().context || 'Connecting…' }}</h1>
+    <div class="sidebar-stats">
+      <span>pods<strong>{{ store.snapshot().totals.pods }}</strong></span>
+      <span>refresh<strong>{{ store.autoRefresh() ? '10s' : 'paused' }}</strong></span>
+      <span>warn<strong class="warn-count">{{ store.snapshot().totals.warnings }}</strong></span>
+      <span>crit<strong class="crit-count">{{ store.snapshot().totals.critical }}</strong></span>
+    </div>
+  </header>
+
+  <button
+    class="scope-row all-row"
+    type="button"
+    [class.scope-row-active]="store.activeNamespace() === 'all'"
+    (click)="store.setNamespace('all')"
+  >
+    <span>All namespaces</span>
+    <strong>{{ store.snapshot().totals.pods }}</strong>
+  </button>
+
+  <section class="scope-list" aria-labelledby="namespace-heading">
+    <h2 id="namespace-heading">Namespaces</h2>
+    @for (ns of store.visibleNamespaces(); track ns.name) {
+      <button
+        class="scope-row"
+        type="button"
+        [class.scope-row-active]="store.activeNamespace() === ns.name"
+        (click)="store.setNamespace(ns.name)"
+      >
+        <span class="scope-title">
+          <strong>{{ ns.name }}</strong>
+          <span [class]="'status-pill ' + (ns.health | statusClass)">{{ ns.health }}</span>
+        </span>
+        <span class="scope-meta">
+          <span>{{ ns.running }}/{{ ns.pods }}</span>
+          <span>{{ ns.cpuMillicores | cpu }}</span>
+          <span>{{ ns.memoryMi | memory }}</span>
+          <span>{{ ns.restarts }}r</span>
+        </span>
+      </button>
+    }
+  </section>
+</aside>

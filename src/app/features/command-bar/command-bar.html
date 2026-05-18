@@ -1,0 +1,53 @@
+<header class="command-bar" role="toolbar" aria-label="Dashboard controls">
+  <div class="title-line">
+    <h2>Live Kubernetes snapshot</h2>
+    <span>{{ store.snapshot().generatedAt | shortTime }}</span>
+    @if (store.loading()) {
+      <span class="loading-badge">loading</span>
+    }
+    @if (store.error()) {
+      <span class="error-badge">api offline</span>
+    }
+  </div>
+
+  <div class="command-actions">
+    <label class="search-box">
+      <span class="sr-only">Filter cluster rows</span>
+      <input
+        type="search"
+        placeholder="filter pods, workloads, nodes"
+        [value]="store.query()"
+        (input)="setQuery($event)"
+      />
+    </label>
+
+    <button
+      class="chip"
+      type="button"
+      [class.chip-active]="store.rowMode() === 'all'"
+      (click)="store.setMode('all')"
+    >all</button>
+    <button
+      class="chip"
+      type="button"
+      [class.chip-active]="store.rowMode() === 'unhealthy'"
+      (click)="store.setMode('unhealthy')"
+    >unhealthy</button>
+    <button
+      class="chip"
+      type="button"
+      [class.chip-active]="store.rowMode() === 'system'"
+      (click)="store.setMode('system')"
+    >system</button>
+
+    <button class="chip" type="button" (click)="store.toggleAutoRefresh()">
+      {{ store.autoRefresh() ? 'pause' : 'resume' }}
+    </button>
+
+    <button class="primary-action" type="button" (click)="store.refresh()">refresh</button>
+  </div>
+
+  @if (store.error()) {
+    <p class="error-banner">{{ store.error() }}</p>
+  }
+</header>

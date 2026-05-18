@@ -1,0 +1,48 @@
+<section class="pod-pane">
+  <header class="pod-pane-head">
+    <div>
+      <h3>{{ pod().name }}</h3>
+      <p>{{ pod().namespace }} on {{ pod().node }} | {{ pod().ip }}</p>
+    </div>
+    <button type="button" (click)="onRefresh($event)">refresh logs</button>
+  </header>
+
+  <dl class="pod-facts">
+    <div><dt>ready</dt><dd>{{ pod().ready }}</dd></div>
+    <div><dt>state</dt><dd>{{ pod().reason }}</dd></div>
+    <div><dt>cpu</dt><dd>{{ pod().cpuMillicores | cpu }}</dd></div>
+    <div><dt>memory</dt><dd>{{ pod().memoryMi | memory }}</dd></div>
+    <div><dt>restarts</dt><dd>{{ pod().restarts }}</dd></div>
+    <div><dt>age</dt><dd>{{ pod().age }}</dd></div>
+    <div class="wide"><dt>owner</dt><dd>{{ pod().owner }}</dd></div>
+    <div class="wide"><dt>containers</dt><dd>{{ pod().containers.join(', ') || '-' }}</dd></div>
+  </dl>
+
+  <section class="pretty-log" [attr.aria-label]="pod().name + ' logs'">
+    <header>
+      <strong>logs</strong>
+      @if (store.podLogState(pod()).loading) {
+        <span>loading…</span>
+      } @else {
+        <span>
+          {{ store.podLogState(pod()).lines.length }} lines
+          | {{ store.podLogState(pod()).generatedAt | shortTime }}
+        </span>
+      }
+    </header>
+
+    @if (store.podLogState(pod()).error) {
+      <p class="log-error-message">{{ store.podLogState(pod()).error }}</p>
+    }
+
+    <div class="pretty-log-body" tabindex="0" [attr.aria-label]="pod().name + ' log lines'">
+      @for (line of store.podLogState(pod()).lines; track $index) {
+        <p [class]="line | logLevel">
+          <time>{{ line | logTime }}</time>
+          <span>{{ line | logSource }}</span>
+          <code>{{ line | logMessage }}</code>
+        </p>
+      }
+    </div>
+  </section>
+</section>

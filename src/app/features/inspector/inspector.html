@@ -1,0 +1,61 @@
+<aside class="inspector" aria-label="Pod inspector">
+  <header class="inspector-head">
+    <div>
+      <h2>Pod workspace</h2>
+      <p>Click pods to add inspectors. More than 3 switches to tabs.</p>
+    </div>
+    <div class="inspector-actions">
+      <button
+        type="button"
+        [class.chip-active]="store.effectiveInspectorMode() === 'split'"
+        [disabled]="store.openedPods().length > 3"
+        (click)="store.setInspectorMode('split')"
+      >
+        side by side
+      </button>
+      <button
+        type="button"
+        [class.chip-active]="store.effectiveInspectorMode() === 'tabs'"
+        (click)="store.setInspectorMode('tabs')"
+      >
+        tabs
+      </button>
+    </div>
+  </header>
+
+  @if (store.openedPods().length === 0) {
+    <app-empty-state message="Select a pod from the table to inspect details and logs." />
+  } @else {
+    <nav class="pod-tabs" aria-label="Opened pods">
+      @for (pod of store.openedPods(); track store.podKey(pod)) {
+        <button
+          type="button"
+          [class.pod-tab-active]="store.activePodKey() === store.podKey(pod)"
+          (click)="store.activatePod(pod)"
+        >
+          <span [class]="'status-dot ' + (pod.health | statusClass)" aria-hidden="true"></span>
+          <strong>{{ pod.name }}</strong>
+          <small>{{ pod.namespace }}</small>
+          <i
+            role="button"
+            tabindex="0"
+            (click)="onClose($event, pod)"
+            (keydown.enter)="onClose($event, pod)"
+            aria-label="Close pod"
+          >×</i>
+        </button>
+      }
+    </nav>
+
+    <div
+      class="pod-pane-grid"
+      [class.pod-pane-grid-tabs]="store.effectiveInspectorMode() === 'tabs'"
+      [class.pod-pane-grid-two]="store.visibleInspectorPods().length === 2"
+      [class.pod-pane-grid-three]="store.visibleInspectorPods().length === 3"
+    >
+      @for (pod of store.visibleInspectorPods(); track store.podKey(pod)) {
+        <app-pod-pane [pod]="pod" />
+      }
+    </div>
+  }
+</aside>

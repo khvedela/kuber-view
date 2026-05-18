@@ -1,0 +1,10 @@
+<section class="metric-strip" aria-label="Cluster totals">
+  @for (metric of store.densityMetrics(); track metric.label) {
+    <article class="metric">
+      <span>{{ metric.label }}</span>
+      <strong>{{ metric.value }}</strong>
+      <em>{{ metric.detail }}</em>
+      <i [class]="'status-dot ' + (metric.health | statusClass)" aria-hidden="true"></i>
+    </article>
+  }
+</section>
